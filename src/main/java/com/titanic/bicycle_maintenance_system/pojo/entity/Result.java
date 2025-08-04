@@ -1,4 +1,4 @@
-package com.titanic.bicycle_maintenance_system.pojo;
+package com.titanic.bicycle_maintenance_system.pojo.entity;
 
 import lombok.Data;
 

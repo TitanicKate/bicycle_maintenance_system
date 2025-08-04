@@ -1,5 +1,6 @@
-package com.titanic.bicycle_maintenance_system.pojo;
+package com.titanic.bicycle_maintenance_system.pojo.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Table(name = "t_evaluation")
+@TableName("t_evaluation")
 @Entity
 public class Evaluation {
 
