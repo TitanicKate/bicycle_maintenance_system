@@ -1,0 +1,25 @@
+# 服务器配置
+server:
+  port: 7777
+  servlet:
+    context-path: /
+
+
+spring:
+  # 数据库配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/bicycle_maintenance_system
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  # 应用配置
+  application:
+    name: "bicycle_maintenance_system"
+  # JPA配置
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
