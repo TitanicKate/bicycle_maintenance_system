@@ -18,4 +18,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         return getOne(queryWrapper);
     }
+
+    @Override
+    public boolean register(UserDTO userDTO) {
+        // 先检查用户名是否已存在
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", userDTO.getUsername());
+        if (count(queryWrapper) > 0) {
+            return false;
+        }
+        User user = new User();
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(userDTO.getPassword());
+        user.setRole(User.ROLE_STUDENT);
+        user.setStatus(User.STATUS_NORMAL);
+        return save(user);
+    }
 }

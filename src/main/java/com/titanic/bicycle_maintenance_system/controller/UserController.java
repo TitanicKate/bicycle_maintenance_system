@@ -122,29 +122,4 @@ public class UserController {
         boolean deleted = userService.removeById(id);
         return deleted ? Result.success("删除成功") : Result.error("删除失败");
     }
-
-    @PostMapping("/login")
-    @Operation(summary = "用户登录", description = "用户登录接口，验证用户名密码并返回登录状态")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "登录成功",
-                    content = @Content(schema = @Schema(implementation = Result.class))),
-            @ApiResponse(responseCode = "401", description = "登录失败，用户名或密码错误",
-                    content = @Content(schema = @Schema(implementation = Result.class)))
-    })
-    public SaResult login(
-            @Parameter(description = "登录信息，包含用户名和密码", required = true)
-            @RequestBody UserDTO userDTO) {
-        User user = userService.login(userDTO);
-        if (user == null) {
-            return SaResult.error("用户名或密码错误");
-        }
-
-        StpUtil.login(user.getId());
-
-
-        return SaResult.ok()
-                .set("token", StpUtil.getTokenInfo())
-                .set("userId", user.getId())
-                .set("username", user.getUsername());
-    }
 }

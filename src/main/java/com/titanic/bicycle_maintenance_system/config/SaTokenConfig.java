@@ -24,12 +24,12 @@ public class SaTokenConfig implements WebMvcConfigurer {
                 }))
                 .addPathPatterns("/**")                    // 拦截所有接口
                 .excludePathPatterns(
-                        "/bms/user/login",
+                        "/bms/auth/**",
                         // Swagger UI页面路径
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         // OpenAPI文档接口路径
                         "/v3/api-docs/**"
-                );   // 排除登录接口
+                );
     }
 }

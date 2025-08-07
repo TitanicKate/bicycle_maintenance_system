@@ -7,4 +7,5 @@ import com.titanic.bicycle_maintenance_system.pojo.entity.User;
 public interface UserService extends IService<User> {
     User login(UserDTO userDTO);
 
+    boolean register(UserDTO userDTO);
 }
