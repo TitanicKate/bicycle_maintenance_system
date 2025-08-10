@@ -8,6 +8,8 @@ import com.titanic.bicycle_maintenance_system.pojo.entity.User;
 import com.titanic.bicycle_maintenance_system.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     @Override
@@ -30,7 +32,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = new User();
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
-        user.setRole(User.ROLE_STUDENT);
+        user.setCreateTime(LocalDateTime.now());
+        user.setRole(User.ROLE_USER);
         user.setStatus(User.STATUS_NORMAL);
         return save(user);
     }

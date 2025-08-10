@@ -1,13 +1,11 @@
 package com.titanic.bicycle_maintenance_system.controller;
 
-import cn.dev33.satoken.stp.StpUtil;
-import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.titanic.bicycle_maintenance_system.pojo.dto.UserDTO;
 import com.titanic.bicycle_maintenance_system.pojo.entity.Result;
 import com.titanic.bicycle_maintenance_system.pojo.entity.User;
+import com.titanic.bicycle_maintenance_system.pojo.vo.UserVO;
 import com.titanic.bicycle_maintenance_system.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,13 +14,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
-@RequestMapping("/bms/user")
+@RequestMapping("/bms/users")
 @Tag(name = "用户管理", description = "用户的创建、查询、更新、删除及登录等操作接口")
 public class UserController {
 
@@ -40,6 +41,8 @@ public class UserController {
     public Result<User> addUser(
             @Parameter(description = "用户信息对象，包含用户名、密码、角色等信息", required = true)
             @RequestBody User user) {
+        user.setCreateTime(LocalDateTime.now());
+        user.setStatus(User.STATUS_NORMAL);
         boolean saved = userService.save(user);
         return saved ? Result.success(user, "新增成功") : Result.error("新增失败");
     }
@@ -65,7 +68,7 @@ public class UserController {
     @Operation(summary = "条件查询用户列表", description = "根据角色ID查询用户列表，不填角色则返回所有用户")
     @ApiResponse(responseCode = "200", description = "查询成功",
             content = @Content(schema = @Schema(implementation = Result.class)))
-    public Result<List<User>> getUserList(
+    public Result<List<UserVO>> getUserList(
             @Parameter(description = "角色ID（可选），1-管理员，2-普通用户", example = "1")
             @RequestParam(required = false) Integer role) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -73,7 +76,16 @@ public class UserController {
             queryWrapper.eq("role", role);
         }
         List<User> list = userService.list(queryWrapper);
-        return Result.success(list);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH:mm:ss");
+        List<UserVO> userVos = list.stream().map(user -> {
+            UserVO userVO = new UserVO();
+            userVO.setId(String.valueOf(user.getId()));
+            BeanUtils.copyProperties(user, userVO);
+//            userVO.setCreateTime(user.getCreateTime().format(formatter));
+            return userVO;
+        }).toList();
+        return Result.success(userVos);
     }
 
     // 分页查询
@@ -100,11 +112,14 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "更新失败",
                     content = @Content(schema = @Schema(implementation = Result.class)))
     })
-    public Result<User> updateUser(
+    public Result<UserVO> updateUser(
             @Parameter(description = "用户信息对象（需包含ID）", required = true)
             @RequestBody User user) {
         boolean updated = userService.updateById(user);
-        return updated ? Result.success(user, "更新成功") : Result.error("更新失败");
+        UserVO userVO = new UserVO();
+        userVO.setId(String.valueOf(user.getId()));
+        BeanUtils.copyProperties(user, userVO);
+        return updated ? Result.success(userVO, "更新成功") : Result.error("更新失败");
     }
 
     // 删除用户（逻辑删除）
@@ -120,6 +135,22 @@ public class UserController {
             @Parameter(description = "用户ID", required = true, example = "1")
             @PathVariable Long id) {
         boolean deleted = userService.removeById(id);
+        return deleted ? Result.success("删除成功") : Result.error("删除失败");
+    }
+
+    // 批量删除
+    @DeleteMapping("/batch")
+    @Operation(summary = "批量删除用户", description = "根据用户ID列表批量逻辑删除用户，返回删除结果")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "删除成功",
+                    content = @Content(schema = @Schema(implementation = Result.class))),
+            @ApiResponse(responseCode = "500", description = "删除失败",
+                    content = @Content(schema = @Schema(implementation = Result.class)))
+    })
+    public Result<Void> deleteUsers(
+            @Parameter(description = "用户ID列表", required = true)
+            @RequestBody List<Long> ids) {
+        boolean deleted = userService.removeByIds(ids);
         return deleted ? Result.success("删除成功") : Result.error("删除失败");
     }
 }

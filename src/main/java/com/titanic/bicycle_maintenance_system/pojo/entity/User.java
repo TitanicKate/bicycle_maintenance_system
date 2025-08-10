@@ -69,7 +69,7 @@ public class User {
     // 角色常量定义
     public static final Integer ROLE_ADMIN = 1;       // 管理员
     public static final Integer ROLE_REPAIRMAN = 2;   // 维修员
-    public static final Integer ROLE_STUDENT = 3;     // 学生
+    public static final Integer ROLE_USER = 3;     // 学生
 
     // 状态常量定义
     public static final Integer STATUS_DISABLED = 0;  // 禁用

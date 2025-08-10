@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Data
 public class UserVO {
     // 主键ID（用于标识用户）
-    private Long id;
+    private String id;
 
     // 用户名（前端展示或登录相关）
     private String username;

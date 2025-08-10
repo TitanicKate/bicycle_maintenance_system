@@ -45,7 +45,7 @@ public class LoginController {
 
         return SaResult.ok("登录成功")
                 .set("token", StpUtil.getTokenInfo())
-                .set("userId", user.getId())
+                .set("role", user.getRole())
                 .set("username", user.getUsername());
     }
 
