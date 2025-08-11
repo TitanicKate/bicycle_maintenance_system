@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -40,7 +39,8 @@ public class UserController {
     })
     public Result<User> addUser(
             @Parameter(description = "用户信息对象，包含用户名、密码、角色等信息", required = true)
-            @RequestBody User user) {
+            @RequestBody User user
+    ) {
         user.setCreateTime(LocalDateTime.now());
         user.setStatus(User.STATUS_NORMAL);
         boolean saved = userService.save(user);
@@ -76,13 +76,10 @@ public class UserController {
             queryWrapper.eq("role", role);
         }
         List<User> list = userService.list(queryWrapper);
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH:mm:ss");
         List<UserVO> userVos = list.stream().map(user -> {
             UserVO userVO = new UserVO();
             userVO.setId(String.valueOf(user.getId()));
             BeanUtils.copyProperties(user, userVO);
-//            userVO.setCreateTime(user.getCreateTime().format(formatter));
             return userVO;
         }).toList();
         return Result.success(userVos);
