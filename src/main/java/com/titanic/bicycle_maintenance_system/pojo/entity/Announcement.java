@@ -42,6 +42,12 @@ public class Announcement {
     private LocalDateTime createTime;
 
     /**
+     * 修改时间
+     */
+    @Column(name = "update_time")
+    private LocalDateTime updateTime;
+
+    /**
      * 发布人ID（外键，关联用户表）
      */
     @Column(name = "author_id")
