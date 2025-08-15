@@ -66,6 +66,12 @@ public class User {
     @Column(name = "status")
     private Integer status;
 
+    /**
+     * 头像路径
+     */
+    @Column(name = "avatar")
+    private String avatar;
+
     // 角色常量定义
     public static final Integer ROLE_ADMIN = 1;       // 管理员
     public static final Integer ROLE_REPAIRMAN = 2;   // 维修员

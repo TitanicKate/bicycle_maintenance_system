@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.titanic.bicycle_maintenance_system.pojo.entity.Result;
 import com.titanic.bicycle_maintenance_system.pojo.entity.User;
+import com.titanic.bicycle_maintenance_system.pojo.entity.UserPwdChange;
 import com.titanic.bicycle_maintenance_system.pojo.vo.UserVO;
 import com.titanic.bicycle_maintenance_system.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -112,11 +113,7 @@ public class UserController {
     public Result<UserVO> updateUser(
             @Parameter(description = "用户信息对象（需包含ID）", required = true)
             @RequestBody User user) {
-        boolean updated = userService.updateById(user);
-        UserVO userVO = new UserVO();
-        userVO.setId(String.valueOf(user.getId()));
-        BeanUtils.copyProperties(user, userVO);
-        return updated ? Result.success(userVO, "更新成功") : Result.error("更新失败");
+        return userService.customUpdate(user);
     }
 
     // 删除用户（逻辑删除）
@@ -149,5 +146,22 @@ public class UserController {
             @RequestBody List<Long> ids) {
         boolean deleted = userService.removeByIds(ids);
         return deleted ? Result.success("删除成功") : Result.error("删除失败");
+    }
+
+    /**
+     * 修改密码
+     */
+    @PutMapping("/password")
+    @Operation(summary = "修改密码", description = "修改用户密码，返回修改结果")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "修改成功",
+                    content = @Content(schema = @Schema(implementation = Result.class))),
+            @ApiResponse(responseCode = "500", description = "修改失败",
+                    content = @Content(schema = @Schema(implementation = Result.class)))
+    })
+    public Result<String> updatePassword(
+            @Parameter(description = "用户修改密码对象（需包含ID）", required = true)
+            @RequestBody UserPwdChange userPwdChange) {
+        return userService.updatePassword(userPwdChange);
     }
 }

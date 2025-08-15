@@ -17,9 +17,6 @@ public class UserVO {
 
     // 角色（通常需转换为角色名称，如"管理员"而非1，也可保留数字用于权限判断）
     private Integer role;
-    // 可选：角色名称（便于前端直接展示，无需前端转换）
-    private String roleName;
-
     // 手机号（用户联系方式展示）
     private String phone;
 
@@ -29,4 +26,5 @@ public class UserVO {
     // 状态（通常需转换为状态名称，如"正常"而非1，也可保留数字）
     private Integer status;
     // 可选：状态名称（便于前端直接展示）
+    private String avatar;
 }

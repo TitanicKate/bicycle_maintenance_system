@@ -2,9 +2,11 @@ package com.titanic.bicycle_maintenance_system.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
+import cn.hutool.core.bean.BeanUtil;
 import com.titanic.bicycle_maintenance_system.pojo.dto.UserDTO;
 import com.titanic.bicycle_maintenance_system.pojo.entity.Result;
 import com.titanic.bicycle_maintenance_system.pojo.entity.User;
+import com.titanic.bicycle_maintenance_system.pojo.vo.UserVO;
 import com.titanic.bicycle_maintenance_system.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,17 +39,21 @@ public class LoginController {
     public SaResult login(
             @Parameter(description = "登录信息，包含用户名和密码", required = true)
             @RequestBody UserDTO userDTO) {
-        User user = userService.login(userDTO);
-        if (user == null) {
-            return SaResult.error("用户名或密码错误");
-        }
-
-        StpUtil.login(user.getId());
-
-        return SaResult.ok("登录成功")
-                .set("token", StpUtil.getTokenInfo())
-                .set("role", user.getRole())
-                .set("username", user.getUsername());
+//        User user = userService.login(userDTO);
+//        if (user == null) {
+//            return SaResult.error("用户名或密码错误");
+//        }
+//
+//        StpUtil.login(user.getId());
+//
+//        UserVO userVO = new UserVO();
+//        userVO.setId(String.valueOf(user.getId()));
+//        BeanUtils.copyProperties(user, userVO);
+//
+//        return SaResult.ok("登录成功")
+//                .setData(userVO)
+//                .set("token", StpUtil.getTokenInfo());
+        return userService.login(userDTO);
     }
 
     @PostMapping("/register")
